@@ -38,3 +38,7 @@ export const tools = require('./tools');
 
 export const userMessages = require('./user-messages');
 export const allPosts = require('./all-posts');
+
+export const remote = require('./remote');
+
+export const bookmarks = require('./bookmarks');

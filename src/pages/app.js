@@ -22,6 +22,7 @@ import Helmet from 'react-helmet';
 import { ActionsTrigger } from '../triggers';
 import { INTERCOM_APP_ID } from '../config';
 import WrappedIntercom from '../components/intercom';
+import Remote from '../components/remote-component';
 
 const GAInitializer = ga.Initializer;
 
@@ -74,6 +75,7 @@ export default class App extends React.Component {
         {children}
         {gaContent}
         <WrappedIntercom app_id={INTERCOM_APP_ID} url={url} />
+        <Remote />
       </div>
     );
   }

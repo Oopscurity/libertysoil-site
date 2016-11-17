@@ -84,6 +84,7 @@ export function initApi(bookshelf, sphinx) {
   //api.get('/cities/', controller.getCities);
   api.get('/city/:id', controller.getCity);
 
+  api.get('/user/bookmarks', controller.getBookmarks);
   api.get('/user/recent-hashtags', controller.getUserRecentHashtags);
   api.get('/user/recent-schools', controller.getUserRecentSchools);
   api.get('/user/recent-geotags', controller.getUserRecentGeotags);
@@ -147,6 +148,9 @@ export function initApi(bookshelf, sphinx) {
   api.get('/search', controller.search);
   api.get('/search-quick/:query', controller.searchStats);
 
-
+  api.get('/url', controller.validateUrl);
+  api.post('/bookmarks', controller.createBookmark);
+  api.post('/bookmark/:id', controller.updateBookmark);
+  api.delete('/bookmark/:id', controller.deleteBookmark);
   return api.routes();
 }

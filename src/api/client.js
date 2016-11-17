@@ -726,4 +726,29 @@ export default class ApiClient {
     const response = await this.del(`/api/v1/profile-post/${profilePostId}`);
     return await response.json();
   }
+
+  async validateUrl(url, meta = false) {
+    const response = await this.get('/api/v1/url', { url, meta });
+    return await response.json();
+  }
+
+  async createBookmark(data) {
+    const response = await this.postJSON('/api/v1/bookmarks', data);
+    return await response.json();
+  }
+
+  async updateBookmark(data) {
+    const response = await this.postJSON(`/api/v1/bookmark/${data.id}`, data);
+    return await response.json();
+  }
+
+  async deleteBookmark(bookmarkId) {
+    const response = await this.del(`/api/v1/bookmark/${bookmarkId}`);
+    return await response.json();
+  }
+
+  async getBookmarks() {
+    const response = await this.get('/api/v1/user/bookmarks');
+    return await response.json();
+  }
 }

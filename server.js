@@ -173,6 +173,7 @@ app.use(async function reactMiddleware(ctx) {
         .fetch({
           require: true,
           withRelated: [
+            'bookmarks',
             'following',
             'followed_hashtags',
             'followed_schools',
@@ -254,7 +255,7 @@ app.use(async function reactMiddleware(ctx) {
       Helmet.canUseDOM = false;
       const metadata = Helmet.rewind();
 
-      ctx.staus = 200;
+      ctx.status = 200;
       ctx.body = template({ state, html, metadata });
     } catch (e) {
       logger.error(e);
