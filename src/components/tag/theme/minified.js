@@ -23,24 +23,29 @@ import RawTag from '../raw';
 // not to instantiate new {} every time MinifiedTag renders, {} !== {}
 const emptyObject = {};
 
-const MinifiedTag = ({ className, name, round, ...props }) => {
-  const cn = classNames('tag', 'tag--theme_minified', {
-    'tag--round': round,
-    [className]: !!className,
+const MinifiedTag = ({ className, name, icon, round, ...props }) => {
+  const cn = classNames('tag', 'tag--theme_minified', className, {
+    'tag--round': round
   });
   const finalName = {
     ...name,
-    className: classNames('tag__name', {
-      [name.className]: !!name.className
-    })
+    className: classNames('tag__name', name.className)
   };
+
+  let finalIcon = emptyObject;
+  if (icon.icon) {
+    finalIcon = {
+      ...icon,
+      className: classNames('tag__icon', icon.className)
+    };
+  }
 
   return (
     <RawTag
       {...props}
       aside={false}
       className={cn}
-      icon={emptyObject}
+      icon={finalIcon}
       name={finalName}
     />
   );
@@ -53,7 +58,8 @@ MinifiedTag.propTypes = {
 };
 
 MinifiedTag.defaultProps = {
-  name: {},
+  icon: emptyObject,
+  name: emptyObject,
   round: true
 };
 
