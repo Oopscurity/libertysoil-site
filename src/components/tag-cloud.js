@@ -47,16 +47,37 @@ export default class TagCloud extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.resetVisibleTags);
-    document.addEventListener('DOMContentLoaded', this.resetVisibleTags);
-    this.resetVisibleTags();
+    if (this.props.smartCollapsing) {
+      this.subscribe();
+      this.resetVisibleTags();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    this.resetVisibleTags(null, nextProps);
+    const prev = this.props.smartCollapsing;
+    const next = nextProps.smartCollapsing;
+    if (next) {
+      if (next !== prev) {
+        this.subscribe();
+      }
+      this.resetVisibleTags(null, nextProps);
+    } else if (next !== prev) {
+      this.unsubscribe();
+    }
   }
 
   componentWillUnmount() {
+    if (this.props.smartCollapsing) {
+      this.unsubscribe();
+    }
+  }
+
+  subscribe() {
+    window.addEventListener('resize', this.resetVisibleTags);
+    document.addEventListener('DOMContentLoaded', this.resetVisibleTags);
+  }
+
+  unsubscribe() {
     window.removeEventListener('resize', this.resetVisibleTags);
     document.removeEventListener('DOMContentLoaded', this.resetVisibleTags);
   }
