@@ -51,8 +51,8 @@ export default class PostBrief extends React.Component {
         </div>
 
         {current_user.get('id') &&
-          <Dropdown className="card__toolbar_item" icon="more_vert">
-            <MenuItem>
+          <Dropdown className="card__toolbar_item" icon="more_vert" theme="new">
+            <MenuItem className="menu__item--theme_new">
               <Subscribe
                 is_logged_in={!!userId}
                 postId={postId}
@@ -61,7 +61,7 @@ export default class PostBrief extends React.Component {
                 onUnsubscribeFromPost={triggers.unsubscribeFromPost}
               />
             </MenuItem>
-            <MenuItem>
+            <MenuItem className="menu__item--theme_new">
               <EditPost
                 authorId={post.get('user_id')}
                 userId={userId}
