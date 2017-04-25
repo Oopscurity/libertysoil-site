@@ -39,7 +39,7 @@ class HeaderLogo extends React.Component {
 
   render() {
     const iconBody = (
-      <div className="logo">
+      <div className="logo header__logo">
         <span className="logo__title">Liberty Soil</span>
       </div>
     );
