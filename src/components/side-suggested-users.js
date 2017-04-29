@@ -76,7 +76,7 @@ export default class SideSuggestedUsers extends React.Component {
     }
 
     return (
-      <div>
+      <div className="suggested-users">
         {users.take(3).map(user => {
           const more = user.get('more');
           const avatar = more.get('avatar');
