@@ -25,18 +25,35 @@ async function loadMarkdown(path) {
  * @param {Object} _options Options to create Unit with
  */
 export default function Unit(_options) {
-  let examples_count;
+  let examples_count = 0;
   let fs, path, deps;
   let frozen, outdated;
   let listeners;
 
-  const reload = (m) => {
+  const handleExampleChange = () => {
     if (frozen) {
-      outdated = 'reload';
-      return false;
+      if (!outdated) {
+        outdated = 'change';
+      }
+
+      return;
     }
 
-    const { exports: { examples } } = m;
+    Module.broadcast({ type: 'change', target: this }, listeners);
+  };
+
+  const handleMdChange = event => {
+    if (frozen) {
+      outdated = 'reload';
+      return;
+    }
+
+    reload(event.target);
+    Module.broadcast({ type: 'change', target: this }, listeners);
+  };
+
+  const reload = mdModule => {
+    const { exports: { examples } } = mdModule;
     const nextExamples = examples.length;
     if (nextExamples >= examples_count) {
       for (let i = 0; i < examples_count; ++i) {
@@ -49,7 +66,7 @@ export default function Unit(_options) {
             examplePath,
             new Module({
               __fs: fs,
-              __listeners: { change: [path] },
+              __listeners: { change: [handleExampleChange] },
               __path: examplePath,
               __raw: examples[i],
               __compile: processJSX,
@@ -87,6 +104,9 @@ export default function Unit(_options) {
         reload(mdModule);
         break;
       }
+      case 'change': {
+        break;
+      }
     }
 
     outdated = null;
@@ -113,6 +133,9 @@ export default function Unit(_options) {
   }
 
   Object.defineProperties(this, {
+    __path: {
+      get: () => path
+    },
     examples_count: {
       enumerable: true,
       get: () => examples_count
@@ -170,18 +193,32 @@ export default function Unit(_options) {
     }
   });
 
+  if (deps.length) {
+    for (const modulePath of deps) {
+      const dependency = fs.get(modulePath);
+      if (!dependency) {
+        throw new Error(`Unit#${this.url_name}: module '${modulePath}' not found.`);
+      }
+
+      dependency.addListener('change', reload);
+    }
+  }
+
   if (path) {
     const mdModule = fs.get(path);
     if (!mdModule) {
       throw new Error(`Unit#${this.url_name}: module '${path}' not found.`);
     }
 
-    mdModule.addListener('change', reload);
-    deps.push(path);
+    if (!deps.find(p => p === path)) {
+      mdModule.addListener('change', handleMdChange);
+      deps.push(path);
+    }
 
     reload(mdModule);
-    Module.broadcast({ type: 'load', target: this }, listeners);
   }
+
+  Module.broadcast({ type: 'load', target: this }, listeners);
 }
 
 Unit.defaultOptions = {
@@ -190,7 +227,6 @@ Unit.defaultOptions = {
   __fs: null,
   __listeners: { '*': [], load: [], change: [] },
   frozen: false,
-  examples_count: undefined,
   description: null,
   name: null,
   url_name: null
@@ -244,6 +280,21 @@ Unit.from = async (_options/*, load*/) => {
   }
 
   return new Unit(options);
+};
+
+Unit.getExamples = (unit) => {
+  const res = [];
+  const fs = unit.__fs;
+  const mdPath = unit.__path;
+  for (let i = 0, l = unit.examples_count; i < l; ++i) {
+    res.push(fs.get(`${mdPath}#${i}`));
+  }
+
+  return res;
+};
+
+Unit.getExample = (unit, i) => {
+  return unit.__fs.get(`${unit.__path}#${i}`);
 };
 
 // Unit.from = async (path) => {

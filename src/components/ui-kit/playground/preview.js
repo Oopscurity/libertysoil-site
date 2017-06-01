@@ -3,7 +3,8 @@ import isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 
 import createSelector from '../../../selectors/createSelector';
-import { transformJSX } from './util';
+import { uiKit } from '../util/ui-kit';
+import Unit from '../util/unit';
 
 class ExamplePreview extends React.Component {
   constructor(props, ...args) {
@@ -13,35 +14,14 @@ class ExamplePreview extends React.Component {
     if (typeof window === 'undefined') {
       this.example = { __module: { default: () => {} } };
     } else {
-      const docs = window.UIKit.docs[this.props.urlName];
-      this.context = docs.context;
-      this.example = docs.examples[this.props.index];
-      this.execute();
+      const unit = uiKit.units.get(this.props.urlName);
+      this.example = Unit.getExample(unit, this.props.index);
     }
   }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps !== this.props
-      || !isEqual(nextState, this.state);
-  }
-
-  execute = () => {
-    const compiled = transformJSX(this.state.code, { context: this.context });
-    if (this.example.__code === compiled.__code) {
-      return;
-    }
-
-    this.example.__code = compiled.__code;
-    try {
-      this.example.__module = eval(compiled.__code);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   render() {
     let body;
-    const Component = this.example.__module.default;
+    const Component = this.example.exports.default;
     if (Component instanceof Function) {
       body = <Component />;
     } else {

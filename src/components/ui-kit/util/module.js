@@ -1,8 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep';
 import difference from 'lodash/difference';
 import { dirname, join } from 'path-browserify';
-import { tryRequire } from './require';
 
+import { CONFIG } from '../../../consts/ui-kit';
+import { tryRequireRaw } from './require';
 import transform from './transform';
 
 function isFromSrc(path) {
@@ -14,7 +15,7 @@ async function loadSource(path) {
     return await fetch(CONFIG.js.rootpath.concat(join('/src', path)));
   }
 
-  return require(tryRequire('!!raw-loader!'.concat(path))); // ??? need context
+  return tryRequireRaw('./'.concat(path));
 }
 
 export default function Module(_options) {
@@ -30,8 +31,10 @@ export default function Module(_options) {
     }
 
     if (compile) {
-      if (typeof __raw !== 'string') { // isPromise
-        return __raw.then(rebuild).catch((e) => { ??? });
+      if (typeof raw !== 'string') { // isPromise
+        return raw
+          .catch(e => { raw = ''; console.error(e.message); })
+          .then(src => { raw = src; rebuild(); });
       }
 
       // dont't `Object.assign(this, compile(this));`

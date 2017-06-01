@@ -11,7 +11,10 @@ export default class UnitComponent extends React.Component {
     super(props, ...args);
 
     this.state = { docs: {}, jsx: '', isReady: false };
-    setTimeout(this.tryApplyListeners, 300);
+
+    if (typeof window !== 'undefined') {
+      setTimeout(this.tryApplyListeners, 300);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -27,31 +30,38 @@ export default class UnitComponent extends React.Component {
     }
 
     this.applyListeners(unit);
+    this.handleChange();
   };
 
   applyListeners = (unit) => {
     unit.addListener('*', this.handleChange);
   };
 
-  handleChange = () => {
+  handleChange = (event) => {
     const { __path: path } = this.props.entry;
     const mdModule = uiKit.fs.get(path);
+
     if (!mdModule) {
       return;
     }
 
-    const { examples, md } = mdModule.exports;
+    const { examples } = mdModule.exports;
+    const nextMd = mdModule.exports.md.split('```KIT_EXAMPLE\n```');
 
-    console.log(examples, md);
+    for (
+      let i = 0, j = 1, l = nextMd.length, k = examples.length;
+      i < l && i < k;
+      ++i, j += 2
+    ) {
+      nextMd.splice(j, 0, '```KIT_EXAMPLE\n'.concat(examples[i]));
+    }
 
-    let index = 0;
-    const nextMd = md.replace(/```KIT\n/g, g => {
-      return g.concat(examples[index++]);
-    });
+    const nextState = { docs: { md: nextMd, examples }, isReady: true };
+    if (!this.state.isReady && this.props.entry.__jsx_default) {
+      nextState.jsx = uiKit.fs.get(this.props.entry.__jsx_default).__raw;
+    }
 
-    console.log(nextMd);
-
-    this.setState({ docs: { md: nextMd, examples }, isReady: true });
+    this.setState(nextState);
   };
 
   // fetchSources = async () => {
@@ -70,42 +80,39 @@ export default class UnitComponent extends React.Component {
   //   }
   // };
 
-  // handleJSXChange = debounce((code) => {
-  //   const path = this.props.entry.js.url;
-  //   const compiled = transformJSX(code, { skipES2015Transform: false });
-  //   const m = getModule(path);
+  handleJSXChange = debounce((code) => {
+    const path = this.props.entry.js.url;
+    const compiled = transformJSX(code, { skipES2015Transform: false });
+    const m = getModule(path);
 
-  //   if (compiled.__code === m.__code) {
-  //     console.log('Nothing changed!');
-  //     return;
-  //   }
+    if (compiled.__code === m.__code) {
+      console.log('Nothing changed!');
+      return;
+    }
 
-  //   extendModule(path, compiled);
-  //   try {
-  //     extendModule(path, eval(compiled.code));
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }, 3000);
+    extendModule(path, compiled);
+    try {
+      extendModule(path, eval(compiled.code));
+    } catch (e) {
+      console.log(e);
+    }
+  }, 3000);
 
   // handleLessChange = () => {
 
   // };
 
   render() {
-    // const req = require.context('..', true, /^\.\/(((api\/client)|(utils\/(browser|command|lang|loader|message|paragraphify|tags|urlGenerator)))|((components|actions|consts|definitions|external|less|pages|(prop-types)|selectors|triggers)\/.*)|([a-zA-Z]{1,}))\.(js|less)$/);
-    // console.log(require.context('../../../node_modules', true, /^\.\/react\/index\.js$/));
-    // console.log(require.resolve('react-dom'));
-
     let index = 0;
+
     return (
       <div className="layout layout-rows">
         <div className="layout__row">
           {this.state.docs.md && this.state.docs.md.map((chunk, i) => {
-            if (chunk.startsWith('```KIT\n')) {
+            if (chunk.startsWith('```KIT_EXAMPLE\n')) {
               return (
                 <Preview
-                  code={chunk.replace('```KIT\n', '')}
+                  code={chunk.replace('```KIT_EXAMPLE\n', '')}
                   index={index++}
                   key={i}
                   urlName={this.props.entry.url_name}

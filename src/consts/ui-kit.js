@@ -23,6 +23,7 @@ export const UNITS = [
     name: 'Button',
     description: null,
     url_name: 'button',
+    __jsx_default: 'components/button/index',
     __path: 'components/button/README'
   }
 ];

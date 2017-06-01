@@ -89,7 +89,6 @@ class UiKitPage extends React.Component {
 
     try {
       const unit = await Unit.from({ ...options, __fs: uiKit.fs });
-      console.log(unit);
       uiKit.units.set(options.url_name, unit);
     } catch (e) {
       console.log(e);
