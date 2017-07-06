@@ -24,6 +24,7 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import createSelector from '../../selectors/createSelector';
 import Login from './wrappers/login';
 import Register from './wrappers/register';
+import ResetPassword from './wrappers/resetpassword';
 
 const onClose = (() => {
   if (browserHistory) {
@@ -96,6 +97,18 @@ class ContextualRoutes extends React.Component {
         component = (
           <Register
             key="signup"
+            onClose={onClose}
+            {...omit(this.props, KNOWN_PROPS)}
+            {...restProps}
+          />
+        );
+
+        break;
+      }
+      case '#resetpassword': {
+        component = (
+          <ResetPassword
+            key="resetpassword"
             onClose={onClose}
             {...omit(this.props, KNOWN_PROPS)}
             {...restProps}
