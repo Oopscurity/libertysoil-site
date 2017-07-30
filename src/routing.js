@@ -62,6 +62,8 @@ import AllPostsPage from './pages/all-posts';
 import HashtagSubscriptionsPage from './pages/hashtag-subscriptions';
 import SchoolSubscriptionsPage from './pages/school-subscriptions';
 import GeotagSubscriptionsPage from './pages/geotag-subscriptions';
+import StoryPage from './pages/story';
+import StoryEditPage from './pages/story-edit';
 
 import ListPage from './pages/list';
 import Induction from './pages/induction';
@@ -90,6 +92,9 @@ export function getRoutes(authHandler, fetchHandler) {
       <Route component={Welcome} path="/welcome" onEnter={withoutAuth} />
       <Route component={Auth} path="/auth" onEnter={withoutAuth} />
       <Route component={PostPage} path="/post/:uuid" onEnter={withoutAuth} />
+      <Route component={StoryEditPage} path="/story/edit/:uuid" onEnter={withAuth} />
+      <Route component={StoryEditPage} path="/story/new" onEnter={withAuth} />
+      <Route component={StoryPage} path="/story/:uuid" onEnter={withoutAuth} />
       <Route component={PostEditPage} path="/post/edit/:uuid" onEnter={withAuth} />
       <Route path="/tag">
         <IndexRoute component={TagCloudPage} onEnter={withoutAuth} />

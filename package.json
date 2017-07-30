@@ -46,6 +46,7 @@
     "email": "info@lokieducation.org"
   },
   "dependencies": {
+    "Dante2": "oopscurity/dante2#fix\/deps",
     "aws-sdk": "~2.36.0",
     "babel-cli": "~6.24.0",
     "babel-polyfill": "~6.23.0",
