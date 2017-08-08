@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV === 'development') {
-  Error.stackTraceLimit = Infinity;
+  Error.stackTraceLimit = 40;
   require('trace');
   require('clarify');
 }

@@ -4,6 +4,7 @@ import { Route, IndexRoute } from 'react-router';
 import Main from './pages/Main';
 import Editor from './pages/Editor';
 import Viewer from './pages/Preview';
+import ColorPalette from './pages/ColorPalette';
 import App from './components/App';
 import ScreenList from './components/ScreenList';
 import ComponentList from './components/ComponentList';
@@ -23,6 +24,12 @@ export const getRoutes = (authHandler, enterHandler, changeHandler) => {
         <Route path="/preview(/:name)(/:page)" component={Viewer} onChange={changeHandler} onEnter={withoutAuth} />
       </Route>
       <Route path="/component/(:name)" component={SingleComponent} onChange={changeHandler} onEnter={withoutAuth} />
+      <Route
+        component={ColorPalette}
+        path="/color-palette"
+        onChange={changeHandler}
+        onEnter={withoutAuth}
+      />
     </Route>
   );
 };
