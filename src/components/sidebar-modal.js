@@ -19,7 +19,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import Link from 'react-router/lib/Link';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransition } from 'react-transition-group';
 
 import { OldIcon as Icon } from './icon';
 
@@ -80,15 +80,16 @@ class SidebarModalMain extends React.PureComponent {
       return (
         <div className={cn}>
           {outside}
-          <CSSTransitionGroup
-            transitionName="sidebar-modal__main--transition"
-            transitionAppear
-            transitionAppearTimeout={250}
-            transitionEnterTimeout={250}
-            transitionLeaveTimeout={250}
+          <CSSTransition
+            appear
+            classNames="sidebar-modal__main--transition"
+            in
+            mountOnEnter
+            timeout={250}
+            unmountOnExit
           >
-            {this.props.isVisible ? content : null}
-          </CSSTransitionGroup>
+            {content}
+          </CSSTransition>
         </div>
       );
     }

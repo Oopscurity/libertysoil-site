@@ -323,17 +323,6 @@
       position: relative;
       @transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
 
-      &-appear {
-        opacity: 0.01;
-        transform: translateY(-100%);
-
-        &-active {
-          opacity: 1;
-          transform: translateY(0%);
-          transition: @transition;
-        }
-      }
-
       &-enter {
         opacity: 0.01;
         transform: translateY(-100%);
@@ -345,7 +334,7 @@
         }
       }
 
-      &-leave {
+      &-exit {
         opacity: 1;
         transform: translateY(0%);
 

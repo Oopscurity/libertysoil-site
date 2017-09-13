@@ -114,6 +114,10 @@ class LoginComponentV2 extends React.Component {
       || !isEqual(nextState, this.state);
   }
 
+  componentWillUnmount() {
+    console.log('unmount');
+  }
+
   handleSubmit = async (isValid, username, password) => {
     this.props.dispatch(removeAllMessages());
     if (!isValid) {
@@ -134,6 +138,8 @@ class LoginComponentV2 extends React.Component {
 
   render() {
     const { locale, messages, onClose } = this.props;
+
+    console.log(this.props.state);
 
     const translate = t.translateTo(locale);
     const rtl = SUPPORTED_LOCALES[locale].rtl;

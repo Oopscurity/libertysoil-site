@@ -18,11 +18,19 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import omit from 'lodash/omit';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { ArrayOfMessages as ArrayOfMessagesPropType } from '../prop-types/messages';
 
 import Message from './message';
+
+const DEFAULT_ANIMATION = {
+  appear: true,
+  classNames: 'form__message--transition',
+  mountOnEnter: true,
+  timeout: 250,
+  unmountOnExit: true
+};
 
 export default class Messages extends React.PureComponent {
   static displayName = 'Messages';
@@ -71,19 +79,17 @@ export default class Messages extends React.PureComponent {
           className={classNames('message__group', this.props.className)}
           {...this.restProps}
         >
-          <CSSTransitionGroup
-            component="div"
-            transitionAppear
-            transitionAppearTimeout={250}
-            transitionEnter
-            transitionEnterTimeout={250}
-            transitionLeave
-            transitionLeaveTimeout={250}
-            transitionName="form__message--transition"
-            {...this.props.animationProps}
-          >
-            {children}
-          </CSSTransitionGroup>
+          <TransitionGroup component="div">
+            {children.map(element => (
+              <CSSTransition
+                key={element.props.key}
+                {...DEFAULT_ANIMATION}
+                {...this.props.animationProps}
+              >
+                {element}
+              </CSSTransition>
+            ))}
+          </TransitionGroup>
         </div>
       );
     }

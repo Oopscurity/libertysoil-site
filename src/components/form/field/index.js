@@ -17,7 +17,7 @@
 */
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransition } from 'react-transition-group';
 import omit from 'lodash/omit';
 
 import { OldIcon as Icon } from '../../icon';
@@ -37,12 +37,11 @@ const STATUS_ICONS = {
 };
 
 const ANIMATION_PROPS = {
-  component: 'div',
-  transitionAppear: true,
-  transitionAppearTimeout: 250,
-  transitionLeave: true,
-  transitionLeaveTimeout: 250,
-  transitionName: 'form__message--transition'
+  appear: true,
+  classNames: 'form__message--transition',
+  mountOnEnter: true,
+  timeout: 250,
+  unmountOnExit: true
 };
 
 const DOT_ICON_SIZE = { outer: 'l', inner: 's' };
@@ -190,12 +189,12 @@ export default class FormField extends React.Component {
     if (animated) {
       messages = (
         <div>
-          <CSSTransitionGroup {...ANIMATION_PROPS}>
-            {errorMessage}
-          </CSSTransitionGroup>
-          <CSSTransitionGroup {...ANIMATION_PROPS}>
-            {warnMessage}
-          </CSSTransitionGroup>
+          <CSSTransition in={!!errorMessage} {...ANIMATION_PROPS}>
+            <div>{errorMessage}</div>
+          </CSSTransition>
+          <CSSTransition in={!!warnMessage} {...ANIMATION_PROPS}>
+            <div>{warnMessage}</div>
+          </CSSTransition>
         </div>
       );
     } else {

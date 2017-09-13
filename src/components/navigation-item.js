@@ -19,7 +19,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { Link } from 'react-router';
 import omit from 'lodash/omit';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { OldIcon as Icon } from './icon';
 
@@ -41,12 +41,10 @@ NavigationItem.propTypes = {
 
 const ANIMATION_PROPERTIES = {
   className: 'navigation-item__content-wrapper',
-  component: 'div',
-  transitionName: 'navigation-item--transition',
-  transitionEnter: true,
-  transitionLeave: true,
-  transitionEnterTimeout: 250,
-  transitionLeaveTimeout: 250
+  classNames: 'navigation-item--transition',
+  mountOnEnter: true,
+  timeout: 250,
+  unmountOnEnter: true
 };
 
 /**
@@ -93,9 +91,11 @@ const NavigationItemPlain = ({
     let contentContainer;
     if (animated) {
       contentContainer = (
-        <CSSTransitionGroup {...ANIMATION_PROPERTIES}>
-          {truncated ? null : content}
-        </CSSTransitionGroup>
+        <TransitionGroup component="div">
+          <CSSTransition {...ANIMATION_PROPERTIES}>
+            {truncated ? null : content}
+          </CSSTransition>
+        </TransitionGroup>
       );
     } else if (!truncated) {
       contentContainer = content;
@@ -169,9 +169,11 @@ const NavigationItemAsLink = ({
     let contentContainer;
     if (animated) {
       contentContainer = (
-        <CSSTransitionGroup {...ANIMATION_PROPERTIES}>
-          {truncated ? null : content}
-        </CSSTransitionGroup>
+        <TransitionGroup component="div">
+          <CSSTransition {...ANIMATION_PROPERTIES}>
+            {truncated ? null : content}
+          </CSSTransition>
+        </TransitionGroup>
       );
     } else if (!truncated) {
       contentContainer = content;

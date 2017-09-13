@@ -18,7 +18,7 @@
 import React, { PropTypes } from 'react';
 import omit from 'lodash/omit';
 import { browserHistory, createMemoryHistory } from 'react-router';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import getRouteFor from '../../selectors/contextual-routes';
 import Login from './wrappers/login';
@@ -52,7 +52,19 @@ const onClose = (() => {
 
 const pobj = {};
 
-export default class ContextualRoutes extends React.Component {
+const ANIMATION_PROPS = {
+  appear: true,
+  classNames: 'sidebar-modal__overlay--transition',
+  enter: false,
+  exit: true,
+  mountOnEnter: true,
+  timeout: 250,
+  unmountOnExit: true
+};
+
+const DEFAULT_COMPONENT = <div />;
+
+export default class ContextualRoutes extends React.PureComponent {
   static propTypes = {
     location: PropTypes.shape(),
     only: PropTypes.arrayOf(PropTypes.string),
@@ -65,9 +77,31 @@ export default class ContextualRoutes extends React.Component {
     predefProps: {}
   };
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps !== this.props;
+  componentWillUpdate(nextProps) {
+    const { route: nextRoute } = nextProps.location.query;
+    const { route: prevRoute } = this.props.location.query;
+    if (nextRoute !== prevRoute) {
+      const nextRouteType = typeof nextRoute;
+      const prevRouteType = typeof prevRoute;
+      if (nextRouteType === prevRouteType) {
+        if (nextRouteType === 'string') {
+          this.addRoute(nextRoute);
+        } else if (Array.isArray(nextRoute)) {
+          this.addRoutes(nextRoute);
+        }
+      }
+    }
   }
+
+  addRoute(routeName) {
+    const i = this.renderedRoutes.indexOf(routeName);
+    if (i >= 0) {
+      this.renderedRoutes.splice(i, 1);
+    }
+    this.renderedRoutes.push(routeName);
+  }
+
+  renderedRoutes = [];
 
   render() {
     const routeName = getRouteFor(this.props)(this.props.scope);
@@ -87,46 +121,52 @@ export default class ContextualRoutes extends React.Component {
       }
     }
 
-    let component;
+    let Component, isVisible;
 
     switch (routeName) {
       case 'login': {
-        component = (
+        isVisible = true;
+        Component = props => (
           <Login
             key="login"
+            isVisible
             onClose={onClose}
             {...omit(this.props, KNOWN_PROPS)}
             {...restProps}
+            {...props}
           />
         );
 
         break;
       }
       case 'signup': {
-        component = (
+        isVisible = true;
+        Component = (props) => (
           <Register
             key="signup"
+            isVisible
             onClose={onClose}
             {...omit(this.props, KNOWN_PROPS)}
             {...restProps}
+            {...props}
           />
         );
 
         break;
       }
+      default: {
+        isVisible = false;
+        Component = () => DEFAULT_COMPONENT;
+      }
     }
 
     return (
-      <CSSTransitionGroup
-        component="div"
-        transitionName="sidebar-modal__overlay--transition"
-        transitionAppear={false}
-        transitionEnter={false}
-        transitionLeave
-        transitionLeaveTimeout={250}
+      <CSSTransition
+        in={isVisible}
+        {...ANIMATION_PROPS}
       >
-        {component}
-      </CSSTransitionGroup>
+        {(state) => <Component state={state} />}
+      </CSSTransition>
     );
   }
 }
