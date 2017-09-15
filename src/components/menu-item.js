@@ -14,18 +14,34 @@
 
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-import React from 'react';
+*/
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import omit from 'lodash/omit';
 
-const MenuItem = ({ className, isOption, ...props }) => {
-  const cn = classNames('menu__item action', className);
+const MenuItem = (props) => {
+  const cn = classNames('menu__item action', props.className);
 
-  if (isOption) {
-    return <option className={cn} {...props} />;
+  // TODO: check compatibility with JS disabled mode
+  if (props.isOption) {
+    return (
+      <div
+        className={cn}
+        data-value={props.value}
+        {...omit(props, KNOWN_PROPS)}
+      />
+    );
   }
 
   return <div className={cn} {...props} />;
 };
+
+MenuItem.propTypes = {
+  className: PropTypes.string,
+  isOption: PropTypes.bool,
+  value: PropTypes.string
+};
+
+const KNOWN_PROPS = Object.keys(MenuItem.propTypes);
 
 export default MenuItem;
