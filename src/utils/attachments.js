@@ -18,13 +18,15 @@
 // @flow
 import crypto from 'crypto';
 
-import AWS from 'aws-sdk';
+import type { default as AWS } from 'aws-sdk';
+import AWSConfig from 'aws-sdk/lib/config';
+import S3 from 'aws-sdk/clients/s3';
 
 import config from '../../config';
 
 
-AWS.config.setPromisesDependency(Promise);
-const s3 = new AWS.S3(config.attachments.s3);
+AWSConfig.setPromisesDependency(Promise);
+const s3 = new S3(config.attachments.s3);
 
 /**
  * Uploads the file to the bucket specified in config.attachments.s3.Bucket.
@@ -33,7 +35,11 @@ const s3 = new AWS.S3(config.attachments.s3);
  * @param {String} mimeType
  * @returns {Promise} {Location: String, ETag: String}
  */
-export async function uploadAttachment(fileName: string, fileData: Buffer | Uint8Array | Blob | string, mimeType: string) {
+export async function uploadAttachment(
+  fileName: string,
+  fileData: Buffer | Uint8Array | Blob | string,
+  mimeType: string
+)/*: Promise<AWS.S3.ManagedUpload.SendData>*/ {
   const params = {
     Key: fileName,
     Body: fileData,
@@ -43,15 +49,19 @@ export async function uploadAttachment(fileName: string, fileData: Buffer | Uint
   return s3.upload(params).promise();
 }
 
-export async function getMetadata(fileName: string) {
+export async function getMetadata(
+  fileName: string
+)/*: Promise<AWS.S3.HeadObjectOutput>*/ {
   return s3.headObject({ Key: fileName }).promise();
 }
 
-export async function downloadAttachment(fileName: string) {
+export async function downloadAttachment(
+  fileName: string
+)/*: Promise<AWS.S3.GetObjectOutput>*/ {
   return s3.getObject({ Key: fileName }).promise();
 }
 
-export function generateName(fileName: string) {
+export function generateName(fileName: string): string {
   const token = crypto.randomBytes(16).toString('hex');
 
   return `${config.attachments.prefix}${token}-${fileName}`;

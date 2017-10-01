@@ -14,6 +14,8 @@
 
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+ @flow
 */
 import React, { PropTypes } from 'react';
 import omit from 'lodash/omit';
@@ -44,6 +46,12 @@ function translateOutline(outline) {
   props.round = true;
   return props;
 }
+
+export type Props = {
+  icon?: string,
+  outline?: boolean | string,
+  size?: string
+};
 
 export default class IconOldTemplate extends React.PureComponent {
   static displayName = 'IconOldTemplate';
