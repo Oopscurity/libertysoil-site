@@ -86,3 +86,30 @@ export async function userTags(ctx) {
 
   ctx.body = { hashtags, schools, geotags };
 }
+
+export async function getRecentlyUsedTags(ctx) {
+  const Hashtag = ctx.bookshelf.model('Hashtag');
+  const School = ctx.bookshelf.model('School');
+  const Geotag = ctx.bookshelf.model('Geotag');
+
+  const hashtags = await ctx.cache.getCachedJson(
+    'recentlyUsedHashtags',
+    () => Hashtag.getRecentlyUsed().fetch()
+  );
+
+  const schools = await ctx.cache.getCachedJson(
+    'recentlyUsedSchools',
+    () => School.getRecentlyUsed().fetch()
+  );
+
+  const geotags = await ctx.cache.getCachedJson(
+    'recentlyUsedGeotags',
+    () => Geotag.getRecentlyUsed().fetch()
+  );
+
+  ctx.body = {
+    hashtags,
+    schools,
+    geotags,
+  };
+}
