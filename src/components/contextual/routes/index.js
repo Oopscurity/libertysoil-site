@@ -18,6 +18,8 @@
 import wrapWithTransition from '../../../utils/transition';
 import Login from '../../login/v2';
 import Register from '../../register/v2';
+import SidebarComments from '../../comments/sidebar';
 
+export const comments = wrapWithTransition(SidebarComments);
 export const login = wrapWithTransition(Login);
 export const signup = wrapWithTransition(Register);
