@@ -61,6 +61,7 @@ export default function wrapWithTransition(WrappedComponent) {
 
   return class Transition extends WrappedComponent {
     static displayName = `Transition(${componentName})`;
+    static WrappedComponent = WrappedComponent;
 
     // Refs are first available now
     componentDidMount() {
