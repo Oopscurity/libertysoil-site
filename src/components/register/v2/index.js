@@ -142,11 +142,12 @@ class RegisterComponentV2 extends React.PureComponent {
 
     return (
       <div className={cn}>
-        <Modal.Overlay isVisible={this.state.isVisible}>
+        <Modal.Overlay isVisible={this.state.isVisible} version={3}>
           <Modal.Main
             innerClassName="form__container sidebar-form__container"
             isVisible={this.state.isVisible}
             rtl={rtl}
+            version={3}
             onCloseTo={onClose && onClose.to}
           >
             <Modal.Header
