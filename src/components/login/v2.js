@@ -244,12 +244,16 @@ class LoginComponentV2 extends React.PureComponent {
 }
 
 const mapStateToProps = createSelector(
+  state => !!state.getIn(['current_user', 'id']),
   state => state.getIn(['ui', 'locale']),
   state => state.get('messages').filter(msg =>
     ERROR_MESSAGES.find(m => msg.get('message').startsWith(m))
   ),
-  (locale, messages) =>
-    ({ locale, messages: messages.toList() })
+  (is_logged_in, locale, messages) => ({
+    is_logged_in,
+    locale,
+    messages: messages.toList()
+  })
 );
 
 export default connect(
