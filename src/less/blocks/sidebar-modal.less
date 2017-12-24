@@ -319,5 +319,25 @@
         }
       }
     }
+
+    &_4 {
+      .sidebar-modal {
+        &__main {
+          width: 320px;
+        }
+        &__outside {
+          right: 320px;
+        }
+      }
+
+      &.sidebar-modal--rtl {
+        .sidebar-modal {
+          &__outside {
+            right: 0;
+            left: 320px;
+          }
+        }
+      }
+    }
   }
 }
