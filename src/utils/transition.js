@@ -69,6 +69,12 @@ export default function wrapWithTransition(WrappedComponent) {
       if (ancestorTransitionHooks) {
         Object.assign(this, ancestorTransitionHooks);
       }
+      // to make sure the hooks run sequentially
+      // without possible `Promise.then` usage
+      // running order does not matter
+      if (typeof super.componentDidMount === 'function') {
+        super.componentDidMount();
+      }
     }
   };
 }
