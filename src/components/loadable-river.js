@@ -89,7 +89,6 @@ export default class LoadableList extends React.PureComponent {
 
   render() {
     const { className, waiting, ...props } = this.props;
-
     return (
       <div className={className}>
         <this.props.component {...omit(props, ['onAutoLoad', 'onForceLoad'])} />

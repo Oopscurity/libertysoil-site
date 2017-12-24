@@ -15,6 +15,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { omit } from 'lodash';
 import { browserHistory } from 'react-router';
 import { Map as ImmutableMap } from 'immutable';
 import t from 't8on';
@@ -1168,6 +1169,63 @@ export class ActionsTrigger {
     try {
       const response = await this.client.getGeotags(query);
       this.dispatch(a.geotags.addGeotags(response));
+    } catch (e) {
+      this.dispatch(a.messages.addError(e.message));
+    }
+  };
+
+  loadAllHashtags = async (query = {}) => {
+    try {
+      // const response = await this.client.getHashtags(query);
+
+      const response = {
+        count: 3,
+        offset: 0,
+        "entries": [
+          {
+            count: 1,
+            entries: [
+              {"id":"588b5852-a86b-4551-850f-77bf319cb42f","name":"abc","more":null,"post_count":1,"created_at":"2017-12-17T04:42:01.957Z","updated_at":"2017-12-17T04:42:01.780Z","_sphinx_id":"70"}
+            ],
+            key: 'first_letter',
+            offset: 0,
+            value: 'a'
+          },
+          {
+            count: 11,
+            entries: [
+              {"id":"c001aa67-a275-4086-878a-5cab9515f20b","name":"test3","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.387Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"72","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"c001aa67-a275-4086-878a-5cab9515f20b"},{"id":"d8c61884-b190-42a4-ae56-22753f897f85","name":"test4","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.391Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"73","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"d8c61884-b190-42a4-ae56-22753f897f85"},{"id":"23789356-df9c-4091-b582-937b4a2b7451","name":"test5","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.394Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"74","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"23789356-df9c-4091-b582-937b4a2b7451"},{"id":"f820da73-5239-4f48-846b-2cdbde66a743","name":"test6","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.404Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"75","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"f820da73-5239-4f48-846b-2cdbde66a743"},{"id":"f7579f5f-991d-40bf-bf03-652d78875ed4","name":"test7","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.408Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"76","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"f7579f5f-991d-40bf-bf03-652d78875ed4"},{"id":"524aa3f1-24a4-426b-b0aa-273ba843410f","name":"test8","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.413Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"77","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"524aa3f1-24a4-426b-b0aa-273ba843410f"},{"id":"4ab38ba9-9d2c-4436-993d-2e34cc46256e","name":"test9","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.417Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"78","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"4ab38ba9-9d2c-4436-993d-2e34cc46256e"},{"id":"60180fd8-e0f6-4c97-99c8-868d95ada0a3","name":"test10","more":null,"post_count":1,"created_at":"2017-12-18T03:59:51.421Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"79","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"60180fd8-e0f6-4c97-99c8-868d95ada0a3"},{"id":"d630a87a-a556-43a5-a77c-f1e592fedcf9","name":"test2","more":null,"post_count":2,"created_at":"2017-12-17T04:41:42.268Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"69","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"d630a87a-a556-43a5-a77c-f1e592fedcf9"},{"id":"66348703-ccb9-4302-9572-3a50155fa5ba","name":"test1","more":null,"post_count":2,"created_at":"2017-12-17T04:41:30.915Z","updated_at":"2017-12-18T03:59:50.935Z","_sphinx_id":"68","_pivot_post_id":"a1ec353e-3891-44ed-b62e-14bcf3ec86a9","_pivot_hashtag_id":"66348703-ccb9-4302-9572-3a50155fa5ba"},
+              {"id":"95e724c7-971c-4e69-a1b6-418b49360fa9","name":"test","more":null,"post_count":1,"created_at":"2017-10-20T22:26:53.809Z","updated_at":"2017-10-20T22:26:53.675Z","_sphinx_id":"67"}
+            ],
+            key: 'first_letter',
+            offset: 0,
+            value: 't'
+          },
+          {
+            count: 1,
+            entries: [
+              {"id":"81090db1-84f8-4c73-932c-9d0c94a966c2","name":"xyz","more":null,"post_count":1,"created_at":"2017-12-17T04:42:14.644Z","updated_at":"2017-12-17T04:42:14.494Z","_sphinx_id":"71"}
+            ],
+            key: 'first_letter',
+            offset: 0,
+            value: 'x'
+          }
+        ]
+      };
+
+      if (query.group_by) {
+        this.dispatch(a.river.loadGroupedTagRiver(
+          query,
+          response.entries,
+          omit(response, ['entries'])
+        ));
+      } else {
+        this.dispatch(a.river.loadFlatTagRiver(
+          query,
+          response.entries,
+          omit(response, ['entries'])
+        ));
+      }
     } catch (e) {
       this.dispatch(a.messages.addError(e.message));
     }

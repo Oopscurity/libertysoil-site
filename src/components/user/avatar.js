@@ -53,8 +53,7 @@ export default class Avatar extends React.Component {
       isRound,
       size,
       url,
-      user,
-      userUrl
+      user
     } = this.props;
 
     const finalSize = parseInt(size, 10);
@@ -76,8 +75,12 @@ export default class Avatar extends React.Component {
     }
 
     if (isLink) {
+      const url =
+        this.props.userUrl ||
+        `/user/${user.get('username')}`;
+
       return (
-        <Link className={cn} to={userUrl}>
+        <Link className={cn} to={url}>
           {avatar}
         </Link>
       );
