@@ -15,8 +15,14 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-@import 'sidebar-modal';
-@import 'sidebar-form';
-@import 'sidebar-section';
-@import 'sidebar-list';
-@import 'sidebar-list-item';
+.sidebar-section {
+  &__content {
+    padding-bottom: 48px;
+  }
+  
+  &__title {
+    padding-bottom: 24px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
