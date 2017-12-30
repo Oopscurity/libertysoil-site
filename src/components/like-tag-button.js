@@ -20,7 +20,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { omit } from 'lodash';
 
-import ga from '../external/react-google-analytics';
 import { OldIcon as Icon } from './icon';
 
 const ICON_SIZE = { inner: 'lm', outer: 'm' };
@@ -51,9 +50,7 @@ export default class LikeTagButton extends React.Component {
     if (this._isLiked()) {
       this.props.triggers.unlikeTag(this.props.tag);
     } else {
-      this.props.triggers.likeTag(this.props.tag).then(() => {
-        ga('send', 'event', 'Tags', 'Like', this.props.tag);
-      });
+      this.props.triggers.likeTag(this.props.tag);
     }
   };
 

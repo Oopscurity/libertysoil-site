@@ -33,29 +33,53 @@ const props = {
 const GAInitializer = ga.Initializer;
 
 describe('App page', function () {
-  it('SHOULD NOT render GA when process.env.GOOGLE_ANALYTICS_ID not set', function () {
-    delete process.env.GOOGLE_ANALYTICS_ID;
+  describe('When process.env.GOOGLE_ANALYTICS_ID is not set', function () {
+    let previousId;
 
-    const renderer = ReactShallowRenderer.createRenderer();
-    renderer.render(
-      <UnwrappedApp {...props}>
-        <span>foo</span>
-      </UnwrappedApp>
-    );
+    before(() => {
+      previousId = process.env.GOOGLE_ANALYTICS_ID;
+      process.env.GOOGLE_ANALYTICS_ID = undefined;
+    });
 
-    return expect(renderer, 'not to contain', <GAInitializer />);
+    after(() => {
+      process.env.GOOGLE_ANALYTICS_ID = previousId;
+    });
+
+    it('SHOULD NOT render GA', function () {
+      delete process.env.GOOGLE_ANALYTICS_ID;
+
+      const renderer = ReactShallowRenderer.createRenderer();
+      renderer.render(
+        <UnwrappedApp {...props}>
+          <span>foo</span>
+        </UnwrappedApp>
+      );
+
+      return expect(renderer, 'not to contain', <GAInitializer />);
+    });
   });
 
-  it('SHOULD render GA when process.env.GOOGLE_ANALYTICS_ID is set', function () {
-    process.env.GOOGLE_ANALYTICS_ID = 100;
+  describe('When process.env.GOOGLE_ANALYTICS_ID is set', function () {
+    let previousId;
 
-    const renderer = ReactShallowRenderer.createRenderer();
-    renderer.render(
-      <UnwrappedApp {...props}>
-        <span>foo</span>
-      </UnwrappedApp>
-    );
+    before(() => {
+      previousId = process.env.GOOGLE_ANALYTICS_ID;
+      process.env.GOOGLE_ANALYTICS_ID = 100;
+    });
 
-    return expect(renderer, 'to contain', <GAInitializer />);
+    after(() => {
+      process.env.GOOGLE_ANALYTICS_ID = previousId;
+    });
+
+    it('SHOULD render GA', function () {
+      const renderer = ReactShallowRenderer.createRenderer();
+      renderer.render(
+        <UnwrappedApp {...props}>
+          <span>foo</span>
+        </UnwrappedApp>
+      );
+
+      return expect(renderer, 'to contain', <GAInitializer />);
+    });
   });
 });

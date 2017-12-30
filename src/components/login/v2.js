@@ -24,7 +24,6 @@ import memoize from 'memoizee';
 import t from 't8on';
 
 import { SUPPORTED_LOCALES } from '../../consts/localization';
-import ga from '../../external/react-google-analytics';
 import ApiClient from '../../api/client';
 import { API_HOST } from '../../config';
 import { ActionsTrigger } from '../../triggers';
@@ -135,7 +134,6 @@ class LoginComponentV2 extends React.PureComponent {
     }
 
     if (result) {
-      ga('send', 'event', 'Login', 'Done');
       this.props.onClose();
     }
   };

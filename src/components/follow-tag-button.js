@@ -20,7 +20,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { omit } from 'lodash';
 
-import ga from '../external/react-google-analytics';
 import { CurrentUser as CurrentUserPropType } from '../prop-types/users';
 
 // Statuses for the progress indication.
@@ -72,7 +71,6 @@ export default class FollowTagButton extends React.Component {
       this.setState({
         status: STATUS_JUST_FOLLOWED
       });
-      ga('send', 'event', 'Tags', 'Follow', this.props.tag);
     });
   };
 

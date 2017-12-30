@@ -20,8 +20,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
 
-import ga from '../../external/react-google-analytics';
-
 export default class LoginComponent extends React.Component {
   static displayName = 'LoginComponent';
 
@@ -32,9 +30,10 @@ export default class LoginComponent extends React.Component {
   submitHandler = (event) => {
     event.preventDefault();
 
-    this.props.onLoginUser(this.usernameInput.value, this.passwordInput.value).then(() => {
-      ga('send', 'event', 'Login', 'Done');
-    });
+    this.props.onLoginUser(
+      this.usernameInput.value,
+      this.passwordInput.value
+    );
   };
 
   render() {

@@ -26,7 +26,6 @@ import { ArrayOfSchools as ArrayOfSchoolsPropType } from '../prop-types/schools'
 import { TAG_HASHTAG, TAG_LOCATION, TAG_SCHOOL } from '../consts/tags';
 import ClickOutsideComponentDecorator from '../decorators/ClickOutsideComponentDecorator';
 
-import ga from '../external/react-google-analytics';
 import { OldIcon as Icon } from './icon';
 import Tag from './tag';
 import AddTagModal from './add-tag-modal';
@@ -117,7 +116,6 @@ class CreatePost extends React.Component {
     this.props.actions.resetCreatePostForm();
 
     await this.props.triggers.createPost('short_text', data);
-    ga('send', 'event', 'Post', 'Done', data.hashtags.join(','));
     await this.props.triggers.loadUserRecentTags();
 
     form.onValues({});

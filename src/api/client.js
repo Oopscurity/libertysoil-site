@@ -33,6 +33,7 @@ import type { PostDraftData, Post, PostType, PostId } from '../definitions/posts
 import type { Attachment } from '../definitions/attachments';
 import type { ProfilePost, ProfilePostId, ProfilePostDraftData } from '../definitions/profile-posts';
 import type { SearchResponse, SearchQuery } from '../definitions/search';
+import ga from '../external/react-google-analytics';
 
 type ServerReq = {
   headers: { cookie?: string }
@@ -407,6 +408,11 @@ export default class ApiClient {
 
   async likeHashtag(name: UrlNode): Promise<Success & { hashtag: Hashtag }> {
     const response = await this.post(`/api/v1/tag/${name}/like`);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Tags', 'Like', name);
+    }
+
     return (await response.json(): Success & { hashtag: Hashtag });
   }
 
@@ -417,6 +423,11 @@ export default class ApiClient {
 
   async likeSchool(urlName: UrlNode): Promise<Success & { school: School }> {
     const response = await this.post(`/api/v1/school/${urlName}/like`);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Tags', 'Like', urlName);
+    }
+
     return (await response.json(): Success & { school: School });
   }
 
@@ -427,6 +438,11 @@ export default class ApiClient {
 
   async likeGeotag(urlName: UrlNode): Promise<Success & { geotag: Geotag }> {
     const response = await this.post(`/api/v1/geotag/${urlName}/like`);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Tags', 'Like', urlName);
+    }
+
     return (await response.json(): Success & { geotag: Geotag });
   }
 
@@ -501,11 +517,21 @@ export default class ApiClient {
 
   async registerUser(userData: Object): Promise<Success & { user: User }> {
     const response = await this.postJSON(`/api/v1/users`, userData);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Reg', 'Done');
+    }
+
     return (await response.json(): Success & { user: User });
   }
 
   async login(loginData: { password: string, username: string }): Promise<Success & { user: User }> {
     const response = await this.post(`/api/v1/session`, loginData);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Login', 'Done');
+    }
+
     return (await response.json(): Success & { user: User });
   }
 
@@ -547,6 +573,11 @@ export default class ApiClient {
   async createPost(type: PostType, data: PostDraftData): Promise<Post> {
     data.type = type;
     const response = await this.postJSON(`/api/v1/posts`, data);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Post', 'Done', data.hashtags.join(','));
+    }
+
     return (await response.json(): Post);
   }
 
@@ -602,6 +633,11 @@ export default class ApiClient {
 
   async followTag(name: UrlNode): Promise<Success & { hashtag: Hashtag }> {
     const response = await this.post(`/api/v1/tag/${name}/follow`);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Tags', 'Follow', name);
+    }
+
     return (await response.json(): Success & { hashtag: Hashtag });
   }
 
@@ -622,6 +658,11 @@ export default class ApiClient {
 
   async followSchool(name: UrlNode): Promise<Success & { school: School }> { // TODO: use url_name instead
     const response = await this.post(`/api/v1/school/${name}/follow`);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Tags', 'Follow', name);
+    }
+
     return (await response.json(): Success & { school: School });
   }
 
@@ -645,6 +686,11 @@ export default class ApiClient {
 
   async followGeotag(urlName: UrlNode): Promise<Success & { geotag: Geotag }> {
     const response = await this.post(`/api/v1/geotag/${urlName}/follow`);
+
+    if (process.env.GOOGLE_ANALYTICS_ID) {
+      ga('send', 'event', 'Tags', 'Follow', urlName);
+    }
+
     return (await response.json(): Success & { geotag: Geotag });
   }
 

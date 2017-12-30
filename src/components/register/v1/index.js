@@ -23,7 +23,6 @@ import classNames from 'classnames';
 import t from 't8on';
 
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '../../../consts/localization';
-import ga from '../../../external/react-google-analytics';
 
 import RegisterForm from './form';
 import SuccessContent from './success';
@@ -76,7 +75,6 @@ export default class RegisterComponentV1 extends React.PureComponent {
 
     let header;
     if (registration_success) {
-      ga('send', 'event', 'Reg', 'Done');
       header = (
         <SuccessContent
           translation={t}
