@@ -15,6 +15,7 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { omit } from 'lodash';
 import { browserHistory } from 'react-router';
 import { Map as ImmutableMap } from 'immutable';
 import t from 't8on';
@@ -1168,6 +1169,28 @@ export class ActionsTrigger {
     try {
       const response = await this.client.getGeotags(query);
       this.dispatch(a.geotags.addGeotags(response));
+    } catch (e) {
+      this.dispatch(a.messages.addError(e.message));
+    }
+  };
+
+  loadAllHashtags = async (query = {}) => {
+    try {
+      const response = await this.client.getHashtags(query);
+
+      if (query.group_by) {
+        this.dispatch(a.river.loadGroupedTagRiver(
+          query,
+          response.entries,
+          omit(response, ['entries'])
+        ));
+      } else {
+        this.dispatch(a.river.loadFlatTagRiver(
+          query,
+          response.entries,
+          omit(response, ['entries'])
+        ));
+      }
     } catch (e) {
       this.dispatch(a.messages.addError(e.message));
     }

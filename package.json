@@ -115,6 +115,7 @@
     "promise-streams": "^1.0.1",
     "prop-types": "~15.5.10",
     "proxy-middleware": "^0.15.0",
+    "query-string": "^5.0.1",
     "react": "^16.2.0",
     "react-autosuggest": "^9.3.2",
     "react-avatar-editor": "10.3.0",

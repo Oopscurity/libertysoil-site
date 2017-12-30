@@ -18,7 +18,7 @@
 import { fromJS, Map } from 'immutable';
 import { keyBy } from 'lodash';
 
-import { schools as s, recentTags, users } from '../actions';
+import { schools as s, recentTags, river, users } from '../actions';
 
 function cleanupSchoolObject(school) {
   if (school.description === null) {
@@ -75,6 +75,33 @@ export default function reducer(state = initialState, action) {
         'id'
       );
       state = state.merge(fromJS(schools));
+
+      break;
+    }
+
+    case river.LOAD_GROUPED_TAG_RIVER: {
+      if (action.meta.query.type !== 'schools') {
+        break;
+      }
+
+      const schools = keyBy(action.payload.groups.reduce(
+        (acc, group) => (acc.push.apply(acc, group.entries), acc),
+        []
+      ), 'id');
+
+      state = state.mergeDeep(fromJS(schools));
+
+      break;
+    }
+
+    case river.LOAD_FLAT_TAG_RIVER: {
+      if (action.meta.query.type !== 'schools') {
+        break;
+      }
+
+      state = state.mergeDeep(fromJS(
+        keyBy(action.payload.tags, 'id')
+      ));
 
       break;
     }

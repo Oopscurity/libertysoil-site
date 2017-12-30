@@ -25,6 +25,9 @@ export const LOAD_HASHTAG_SUBSCRIPTONS_RIVER = 'LOAD_HASHTAG_SUBSCRIPTONS_RIVER'
 export const LOAD_SCHOOL_SUBSCRIPTONS_RIVER = 'LOAD_SCHOOL_SUBSCRIPTONS_RIVER';
 export const LOAD_GEOTAG_SUBSCRIPTONS_RIVER = 'LOAD_GEOTAG_SUBSCRIPTONS_RIVER';
 
+export const LOAD_GROUPED_TAG_RIVER = 'SET_GROUPED_TAG_RIVER';
+export const LOAD_FLAT_TAG_RIVER = 'LOAD_FLAT_TAG_RIVER';
+
 export function clearRiver() {
   return {
     type: CLEAR_RIVER
@@ -87,5 +90,31 @@ export function loadGeotagSubscriptionsRiver(posts, meta = { offset: 0 }) {
       posts
     },
     meta
+  };
+}
+
+export function loadGroupedTagRiver(query, groups, meta) {
+  return {
+    type: LOAD_GROUPED_TAG_RIVER,
+    payload: {
+      groups
+    },
+    meta: {
+      query,
+      ...meta
+    }
+  };
+}
+
+export function loadFlatTagRiver(query, tags, meta) {
+  return {
+    type: LOAD_GROUPED_TAG_RIVER,
+    payload: {
+      tags
+    },
+    meta: {
+      query,
+      ...meta
+    }
   };
 }

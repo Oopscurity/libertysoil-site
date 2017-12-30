@@ -18,7 +18,7 @@
 import { fromJS, Map } from 'immutable';
 import { concat, keyBy } from 'lodash';
 
-import { geotags as g, recentTags, users } from '../actions';
+import { geotags as g, recentTags, river, users } from '../actions';
 
 const initialState = Map({});
 
@@ -81,6 +81,33 @@ export default function reducer(state = initialState, action) {
         'url_name'
       );
       state = state.merge(fromJS(geotags));
+
+      break;
+    }
+
+    case river.LOAD_GROUPED_TAG_RIVER: {
+      if (action.meta.query.type !== 'geotags') {
+        break;
+      }
+
+      const geotags = keyBy(action.payload.groups.reduce(
+        (acc, group) => (acc.push.apply(acc, group.entries), acc),
+        []
+      ), 'url_name');
+
+      state = state.mergeDeep(fromJS(geotags));
+
+      break;
+    }
+
+    case river.LOAD_FLAT_TAG_RIVER: {
+      if (action.meta.query.type !== 'geotags') {
+        break;
+      }
+
+      state = state.mergeDeep(fromJS(
+        keyBy(action.payload.tags, 'url_name')
+      ));
 
       break;
     }

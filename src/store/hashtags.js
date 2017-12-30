@@ -18,7 +18,7 @@
 import { fromJS, Map } from 'immutable';
 import { keyBy } from 'lodash';
 
-import { hashtags as h, recentTags, users } from '../actions';
+import { hashtags as h, recentTags, river, users } from '../actions';
 
 const initialState = Map({});
 
@@ -58,6 +58,33 @@ export default function reducer(state = initialState, action) {
         'name'
       );
       state = state.merge(fromJS(hashtags));
+
+      break;
+    }
+
+    case river.LOAD_GROUPED_TAG_RIVER: {
+      if (action.meta.query.type !== 'hashtags') {
+        break;
+      }
+
+      const hashtags = keyBy(action.payload.groups.reduce(
+        (acc, group) => (acc.push.apply(acc, group.entries), acc),
+        []
+      ), 'name');
+
+      state = state.mergeDeep(fromJS(hashtags));
+
+      break;
+    }
+
+    case river.LOAD_FLAT_TAG_RIVER: {
+      if (action.meta.query.type !== 'hashtags') {
+        break;
+      }
+
+      state = state.mergeDeep(fromJS(
+        keyBy(action.payload.tags, 'name')
+      ));
 
       break;
     }
