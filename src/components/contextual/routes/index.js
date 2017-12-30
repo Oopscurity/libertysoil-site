@@ -16,6 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 import wrapWithTransition from '../../../utils/transition';
+
 import Login from '../../login/v2';
 import Register from '../../register/v2';
 import SidebarComments from '../../comments/sidebar';
