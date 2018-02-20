@@ -62,11 +62,6 @@ export default class LoadableList extends React.PureComponent {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps !== this.props
-      || nextState.displayLoadMore !== this.state.displayLoadMore;
-  }
-
   handleAutoLoad = async (...args) => {
     if (!this.props.autoload) {
       return;

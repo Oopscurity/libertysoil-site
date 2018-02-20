@@ -15,14 +15,15 @@
  You should have received a copy of the GNU Affero General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { omit } from 'lodash';
+import faker from 'faker/locale/en';
+import { groupBy, fromPairs, map, omit, take, toPairs } from 'lodash';
 import { browserHistory } from 'react-router';
 import { Map as ImmutableMap } from 'immutable';
 import t from 't8on';
 
 import { DEFAULT_LOCALE } from '../consts/localization';
 import { isStorageAvailable } from '../utils/browser';
-import { toSpreadArray } from '../utils/lang';
+import { toSpreadArray, sortByKeys } from '../utils/lang';
 import * as a from '../actions';
 
 const isBrowser = typeof window !== 'undefined';
@@ -1175,24 +1176,60 @@ export class ActionsTrigger {
   };
 
   loadAllHashtags = async (query = {}) => {
-    try {
-      const response = await this.client.getHashtags(query);
+    let riverType;
+    if (query.group_by) {
+      riverType = 'loadGroupedTagRiver';
+    } else {
+      riverType = 'loadFlatTagRiver';
+    }
 
-      if (query.group_by) {
-        this.dispatch(a.river.loadGroupedTagRiver(
-          query,
-          response.entries,
-          omit(response, ['entries'])
-        ));
-      } else {
-        this.dispatch(a.river.loadFlatTagRiver(
-          query,
-          response.entries,
-          omit(response, ['entries'])
-        ));
-      }
+    this.dispatch(a.ui.setProgress(riverType, true));
+
+    let response;
+
+    try {
+      // const response = await this.client.getHashtags(query);
+
+      const entries = map(
+        fromPairs(take(
+          toPairs(sortByKeys(groupBy(
+            new Array(faker.random.number({ min: 200, max: 500 })).fill('').map(() => faker.name.title()),
+            name => name[0].toLowerCase()
+          ))),
+          query.limit
+        )),
+        (names, letter) => ({
+          count: names.length,
+          entries: names.slice(0, 10).map(name => ({
+            created_at: faker.date.past(),
+            id: faker.random.uuid(),
+            name,
+            more: null,
+            post_count: faker.random.number(200),
+            updated_at: faker.date.past()
+          })),
+          key: 'first_letter',
+          offset: 0,
+          value: letter
+        })
+      );
+
+      response = {
+        count: 4,
+        entries,
+        offset: query.offset,
+      };
+
+      this.dispatch(a.river[riverType](
+        query,
+        response.entries,
+        omit(response, ['entries'])
+      ));
     } catch (e) {
       this.dispatch(a.messages.addError(e.message));
     }
+
+    this.dispatch(a.ui.setProgress(riverType, false));
+    return response;
   };
 }

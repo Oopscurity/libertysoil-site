@@ -17,6 +17,7 @@
 */
 import wrapWithTransition from '../../../utils/transition';
 
+import TagList from '../../sidebar-tags';
 import Login from '../../login/v2';
 import Register from '../../register/v2';
 import SidebarComments from '../../comments/sidebar';
@@ -24,3 +25,4 @@ import SidebarComments from '../../comments/sidebar';
 export const comments = wrapWithTransition(SidebarComments);
 export const login = wrapWithTransition(Login);
 export const signup = wrapWithTransition(Register);
+export const tags = wrapWithTransition(TagList);
